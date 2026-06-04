@@ -1,12 +1,11 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { getDownloadUrl, ls, useMv, useRm } from "@/api/generated";
+import { getDownloadUrl, ls } from "@/api/generated";
+import { useMoveFiles, useDeleteFiles } from "@/api/hooks";
 import { useFileStore } from "@/store/file.store";
 import { useWindowStore } from "@/store/window.store";
 import { BackendFileType, type FileType, VirtualFileType } from "@/types/file";
 import { WindowType } from "@/types/window";
 import { ContentTypes, getContentTypes } from "@/utils/content_type";
-import { isFsQuery } from "@/utils/query_keys";
 import MenuList from "./menu_list";
 
 export default function FileMenu({
@@ -24,17 +23,14 @@ export default function FileMenu({
   parentWindowType: WindowType | null;
   closeMenu: () => void;
 }) {
-  // Query client
-  const queryClient = useQueryClient();
-
   // Get system ID from window store
   const windows = useWindowStore((state) => state.windows);
   const currentWindow = windows.find((w) => w.key === windowKey);
   const systemId = currentWindow?.systemId || "";
 
   // Mutations
-  const rmMutation = useRm();
-  const mvMutation = useMv();
+  const rmMutation = useDeleteFiles();
+  const mvMutation = useMoveFiles();
 
   // Store actions
   const newWindow = useWindowStore((state) => state.newWindow);
@@ -157,11 +153,10 @@ export default function FileMenu({
         systemId,
         data: { sources: paths, destination: "/home/.trash" },
       });
-      queryClient.invalidateQueries({ predicate: isFsQuery });
     } catch (error) {
       console.error("[FileMenu] Move to trash failed:", error);
     }
-  }, [closeMenu, getTargetPaths, systemId, mvMutation, queryClient]);
+  }, [closeMenu, getTargetPaths, systemId, mvMutation]);
 
   const handlePermanentDelete = useCallback(async () => {
     closeMenu();
@@ -171,11 +166,10 @@ export default function FileMenu({
         systemId,
         data: { paths, recursive: true },
       });
-      queryClient.invalidateQueries({ predicate: isFsQuery });
     } catch (error) {
       console.error("[FileMenu] Permanent delete failed:", error);
     }
-  }, [closeMenu, getTargetPaths, systemId, rmMutation, queryClient]);
+  }, [closeMenu, getTargetPaths, systemId, rmMutation]);
 
   const handleEmptyTrash = useCallback(async () => {
     closeMenu();
@@ -193,12 +187,11 @@ export default function FileMenu({
           systemId,
           data: { paths, recursive: true },
         });
-        queryClient.invalidateQueries({ predicate: isFsQuery });
       }
     } catch (error) {
       console.error("[FileMenu] Empty trash failed:", error);
     }
-  }, [closeMenu, path, systemId, rmMutation, queryClient]);
+  }, [closeMenu, path, systemId, rmMutation]);
 
   // Info action
   const handleInfo = useCallback(() => {

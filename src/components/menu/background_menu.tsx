@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { useMkdir } from "@/api/generated";
+import { useCreateDirectory } from "@/api/hooks";
 import { useWindowStore } from "@/store/window.store";
 import { WindowType } from "@/types/window";
 import { isFsQuery } from "@/utils/query_keys";
@@ -24,7 +24,7 @@ export default function BackgroundMenu({
   const systemId = backgroundWindow?.systemId || "";
 
   // Mutations
-  const mkdirMutation = useMkdir();
+  const mkdirMutation = useCreateDirectory();
 
   // Store actions
   const newWindow = useWindowStore((state) => state.newWindow);

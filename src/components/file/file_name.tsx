@@ -1,9 +1,7 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { memo, useEffect, useRef, useState } from "react";
-import { useRename } from "@/api/generated";
+import { useRenameFile } from "@/api/hooks";
 import { useFileStore } from "@/store/file.store";
 import { useWindowStore } from "@/store/window.store";
-import { isFsQuery } from "@/utils/query_keys";
 import { parseSerialKey } from "@/utils/serial_key";
 import styles from "./file_name.module.css";
 
@@ -33,9 +31,6 @@ export default memo(function FileName({
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Query client
-  const queryClient = useQueryClient();
-
   // Store state
   const renamingFileSerial = useFileStore((state) => state.renamingFileSerial);
   // Store actions
@@ -47,7 +42,7 @@ export default memo(function FileName({
   const systemId = currentWindow?.systemId || "";
 
   // Mutations
-  const renameMutation = useRename();
+  const renameMutation = useRenameFile();
 
   // Update file name via API
   const updateFileName = async () => {
@@ -64,11 +59,6 @@ export default memo(function FileName({
           path: fileKey,
           newName: newName.trim(),
         },
-      });
-
-      // Refresh file list
-      queryClient.invalidateQueries({
-        predicate: isFsQuery,
       });
     } catch (error) {
       console.error("[FileName] Rename failed:", error);
