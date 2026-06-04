@@ -1,12 +1,12 @@
-import { useCallback, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useCallback, useRef, useState } from "react";
 import {
-  getInitiateUploadMutationOptions,
   getCompleteUploadMutationOptions,
+  getInitiateUploadMutationOptions,
   statPath,
 } from "@/api/generated";
-import { md5Base64 } from "@/utils/md5";
 import { parseApiError } from "@/api/utils";
+import { md5Base64 } from "@/utils/md5";
 
 export type UploadStatus =
   | "pending"
@@ -75,7 +75,11 @@ export function useUploadManager(systemId: string) {
     async (taskId: string) => {
       // Get task from ref to avoid stale closure
       const task = tasksRef.current.find((t) => t.id === taskId);
-      if (!task || task.status === "cancelled" || isCancelledRef.current.has(taskId)) {
+      if (
+        !task ||
+        task.status === "cancelled" ||
+        isCancelledRef.current.has(taskId)
+      ) {
         return;
       }
 
@@ -174,13 +178,14 @@ export function useUploadManager(systemId: string) {
         setState((prev) => ({
           ...prev,
           tasks: prev.tasks.map((t) =>
-            t.id === taskId
-              ? { ...t, status: "completed", progress: 100 }
-              : t
+            t.id === taskId ? { ...t, status: "completed", progress: 100 } : t
           ),
         }));
       } catch (error) {
-        if (abortController.signal.aborted || isCancelledRef.current.has(taskId)) {
+        if (
+          abortController.signal.aborted ||
+          isCancelledRef.current.has(taskId)
+        ) {
           return;
         }
 
@@ -192,7 +197,8 @@ export function useUploadManager(systemId: string) {
 
         // Auto-retry if not maxed out
         if (retryCount < MAX_RETRIES) {
-          const delay = RETRY_DELAYS[retryCount] ?? RETRY_DELAYS[RETRY_DELAYS.length - 1];
+          const delay =
+            RETRY_DELAYS[retryCount] ?? RETRY_DELAYS[RETRY_DELAYS.length - 1];
           await new Promise((resolve) => setTimeout(resolve, delay));
 
           // Check if cancelled during retry delay
@@ -218,7 +224,9 @@ export function useUploadManager(systemId: string) {
         setState((prev) => ({
           ...prev,
           tasks: prev.tasks.map((t) =>
-            t.id === taskId ? { ...t, status: "failed", error: errorMessage } : t
+            t.id === taskId
+              ? { ...t, status: "failed", error: errorMessage }
+              : t
           ),
         }));
       } finally {
@@ -257,9 +265,7 @@ export function useUploadManager(systemId: string) {
       // Use setTimeout to allow state update to complete first
       setTimeout(async () => {
         const executeBatch = async (batch: UploadTask[]) => {
-          await Promise.allSettled(
-            batch.map((task) => uploadFile(task.id))
-          );
+          await Promise.allSettled(batch.map((task) => uploadFile(task.id)));
         };
 
         for (let i = 0; i < newTasks.length; i += CONCURRENCY) {
@@ -313,13 +319,16 @@ export function useUploadManager(systemId: string) {
     [uploadFile]
   );
 
-  const removeTask = useCallback((taskId: string) => {
-    cancelUpload(taskId);
-    setState((prev) => ({
-      ...prev,
-      tasks: prev.tasks.filter((t) => t.id !== taskId),
-    }));
-  }, [cancelUpload]);
+  const removeTask = useCallback(
+    (taskId: string) => {
+      cancelUpload(taskId);
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.filter((t) => t.id !== taskId),
+      }));
+    },
+    [cancelUpload]
+  );
 
   const clearCompleted = useCallback(() => {
     setState((prev) => ({

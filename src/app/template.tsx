@@ -2,8 +2,8 @@
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
-import { startMockService } from "@/mocks";
 import { queryClient } from "@/api/client";
+import { startMockService } from "@/mocks";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const [mswReady, setMswReady] = useState(false);

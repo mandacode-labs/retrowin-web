@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
-import { useDirectory, useFileInfo } from "@/api/hooks";
 import type { DirEntry } from "@/api/generated/model";
+import { useDirectory, useFileInfo } from "@/api/hooks";
 import { SpecialFileName, VirtualFileType } from "@/types/file";
 import { getFileType, getFileTypeSortOrder } from "@/utils/file_type";
 import styles from "./file_container.module.css";

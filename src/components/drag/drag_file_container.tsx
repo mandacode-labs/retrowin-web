@@ -1,13 +1,11 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useMv } from "@/api/generated";
+import { useMoveFiles } from "@/api/hooks";
 import { useFileStore } from "@/store/file.store";
 import { useEventStore } from "@/store/ui.store";
 import { useWindowStore } from "@/store/window.store";
 import { BackendFileType } from "@/types/file";
 import { WindowType } from "@/types/window";
 import { isDragTarget } from "@/utils/file_type";
-import { isFsQuery } from "@/utils/query_keys";
 import { parseSerialKey } from "@/utils/serial_key";
 import styles from "./drag_file_container.module.css";
 
@@ -16,9 +14,6 @@ export default function DragFileContainer({
 }: {
   children: React.ReactNode;
 }) {
-  // Query client
-  const queryClient = useQueryClient();
-
   // States
   const [start, setStart] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -46,7 +41,7 @@ export default function DragFileContainer({
   const unselectAllFiles = useFileStore((state) => state.unselectAllFiles);
 
   // Mutations
-  const mvMutation = useMv();
+  const mvMutation = useMoveFiles();
 
   // Drag file start
   const dragFileStart = useCallback(
@@ -199,11 +194,6 @@ export default function DragFileContainer({
           systemId,
           data: { sources: filePaths, destination: targetPath },
         });
-
-        // Refetch queries after move to update UI immediately
-        await queryClient.refetchQueries({
-          predicate: isFsQuery,
-        });
       }
 
       unselectAllFiles();
@@ -213,7 +203,6 @@ export default function DragFileContainer({
     findWindow,
     highlightedFile,
     pointerMoved,
-    queryClient,
     selectedFileSerials,
     unselectAllFiles,
     mvMutation,

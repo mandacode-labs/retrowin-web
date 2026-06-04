@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useStatPath } from "@/api/generated";
+import { useFileInfo } from "@/api/hooks";
 import { getWindowConfig } from "@/config/window";
 import { useEventStore } from "@/store/ui.store";
 import { useWindowStore } from "@/store/window.store";
@@ -53,20 +53,10 @@ export default memo(function Window({ windowKey }: { windowKey: string }) {
   const windowContentRef = useRef<HTMLDivElement>(null);
   const positionInitializedRef = useRef(false);
 
-  // Queries - use Orval's generated hook directly
-  const _fileInfo = useStatPath(
+  // Queries - use custom hook
+  const _fileInfo = useFileInfo(
     targetWindow?.systemId || "",
-    { path: targetWindow?.targetKey || "" },
-    {
-      query: {
-        enabled:
-          !!targetWindow?.targetKey &&
-          targetWindow.type !== WindowType.Background &&
-          !!targetWindow?.systemId,
-        select: (data) => (data.status === 200 ? data.data.inode : null),
-      },
-      fetch: { credentials: "include" },
-    }
+    targetWindow?.targetKey || ""
   );
 
   // Set window title

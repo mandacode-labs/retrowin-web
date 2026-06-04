@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { getDownloadUrl, ls } from "@/api/generated";
-import { useMoveFiles, useDeleteFiles } from "@/api/hooks";
+import { useDeleteFiles, useMoveFiles } from "@/api/hooks";
 import { useFileStore } from "@/store/file.store";
 import { useWindowStore } from "@/store/window.store";
 import { BackendFileType, type FileType, VirtualFileType } from "@/types/file";

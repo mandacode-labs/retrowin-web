@@ -1,9 +1,8 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useGetRootDirectory, useGetUser } from "@/api/generated";
+import { useRootDirectory, useUser } from "@/api/hooks";
 import DragFileContainer from "@/components/drag/drag_file_container";
 import FileContainer from "@/components/file/file_container";
 import Background from "@/components/layout/background";
@@ -37,26 +36,11 @@ export default function SystemPage() {
   // Refs
   const backgroundWindowRef = useRef<HTMLDivElement>(null);
 
-  // Queries
-  const _queryClient = useQueryClient();
-
   // Get current user
-  const getUserQuery = useGetUser({
-    query: {
-      retry: false,
-    },
-    fetch: { credentials: "include" },
-  });
+  const getUserQuery = useUser();
 
   // Get root directory for the system
-  const rootDirectoryQuery = useGetRootDirectory(systemId, {
-    query: {
-      retry: false,
-      select: (data) => (data.status === 200 ? data.data.inode : null),
-      enabled: !!systemId && getUserQuery.data?.status === 200,
-    },
-    fetch: { credentials: "include" },
-  });
+  const rootDirectoryQuery = useRootDirectory(systemId);
 
   // Redirect to login on auth error (401)
   useEffect(() => {

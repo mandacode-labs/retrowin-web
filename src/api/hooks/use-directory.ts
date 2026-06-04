@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  getGetRootDirectoryQueryOptions,
   getLsQueryOptions,
   getStatPathQueryOptions,
-  getGetRootDirectoryQueryOptions,
 } from "@/api/generated";
 
 export function useDirectory(systemId: string, path: string) {
@@ -36,5 +36,11 @@ export function useRootDirectory(systemId: string) {
     ...getGetRootDirectoryQueryOptions(systemId),
     enabled: !!systemId,
     retry: false,
+    select: (response) => {
+      if (response.status === 200) {
+        return response.data.inode;
+      }
+      return null;
+    },
   });
 }

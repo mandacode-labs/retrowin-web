@@ -1,82 +1,40 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import {
-  useCreateSystem,
-  useGetUser,
-  useListSystems,
-  useLogout,
-} from "@/api/generated";
+import { useEffect, useState } from "react";
+import { useCreateSystem, useLogout, useSystems, useUser } from "@/api/hooks";
 import { XPImageIcons } from "@/components/icons/xp_image_icons";
 import styles from "./page.module.css";
 
 export default function SystemSelectionPage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [systemName, setSystemName] = useState("");
   const [systemDescription, setSystemDescription] = useState("");
 
   // Auth check
-  const getUserQuery = useGetUser({
-    query: {
-      retry: false,
-    },
-    fetch: { credentials: "include" },
-  });
+  const getUserQuery = useUser();
 
   // Check if user is authenticated
   const isAuthenticated = getUserQuery.data?.status === 200;
 
   // Logout mutation
-  const logoutMutation = useLogout({
-    mutation: {
-      onSuccess: (response) => {
-        // Clear local state
-        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-        queryClient.removeQueries({ queryKey: ["/api/user"] });
-
-        // If logoutUrl is provided, redirect to Keycloak to terminate SSO session
-        const logoutUrl = response.data?.logoutUrl;
-        if (logoutUrl) {
-          window.location.href = logoutUrl;
-        }
-      },
-      onError: (error) => {
-        console.error("Logout failed:", error);
-        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      },
-    },
-    fetch: { credentials: "include" },
-  });
+  const logoutMutation = useLogout();
 
   // Get systems list (only when authenticated)
-  const listSystemsQuery = useListSystems({
-    query: {
-      retry: false,
-      select: (data) => (data.status === 200 ? data.data.systems : []),
-      enabled: isAuthenticated,
-    },
-    fetch: { credentials: "include" },
-  });
+  const listSystemsQuery = useSystems(isAuthenticated);
 
   // Create system mutation
-  const createSystemMutation = useCreateSystem({
-    mutation: {
-      onSuccess: () => {
-        listSystemsQuery.refetch();
-        setIsCreateMode(false);
-        setSystemName("");
-        setSystemDescription("");
-      },
-      onError: (error) => {
-        console.error("Failed to create system:", error);
-      },
-    },
-    fetch: { credentials: "include" },
-  });
+  const createSystemMutation = useCreateSystem();
+
+  // Handle create system success
+  useEffect(() => {
+    if (createSystemMutation.isSuccess) {
+      setIsCreateMode(false);
+      setSystemName("");
+      setSystemDescription("");
+    }
+  }, [createSystemMutation.isSuccess]);
 
   // Handle system selection
   const handleSystemSelect = (systemId: string) => {

@@ -2,8 +2,8 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useUploadManager } from "@/api/hooks/use-upload";
-import { useWindowStore } from "@/store/window.store";
 import { XPImageIcons } from "@/components/icons/xp_image_icons";
+import { useWindowStore } from "@/store/window.store";
 import styles from "./uploader.module.css";
 
 interface UploaderProps {
@@ -17,7 +17,6 @@ export default function Uploader({ targetPath }: UploaderProps) {
 
   const {
     tasks,
-    isUploading,
     addFiles,
     cancelUpload,
     retryUpload,
@@ -66,17 +65,17 @@ export default function Uploader({ targetPath }: UploaderProps) {
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
-        return "대기 중...";
+        return "Pending...";
       case "uploading":
-        return "업로드 중...";
+        return "Uploading...";
       case "completed":
-        return "완료";
+        return "Completed";
       case "failed":
-        return "실패";
+        return "Failed";
       case "cancelled":
-        return "취소됨";
+        return "Cancelled";
       case "skipped":
-        return "이미 존재";
+        return "Already exists";
       default:
         return status;
     }
@@ -105,18 +104,19 @@ export default function Uploader({ targetPath }: UploaderProps) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <span>파일 업로드</span>
+        <span>File Upload</span>
       </div>
 
-      <div
+      <button
+        type="button"
         className={`${styles.dropZone} ${isDragOver ? styles.dropZoneActive : ""}`}
         onClick={handleClickDropZone}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
-        파일을 여기로 끌어다 놓거나 클릭하여 선택하세요
-      </div>
+        Drag and drop files here or click to select
+      </button>
 
       <input
         ref={fileInputRef}
@@ -129,7 +129,7 @@ export default function Uploader({ targetPath }: UploaderProps) {
       <div className={styles.fileList}>
         {tasks.length === 0 ? (
           <div style={{ textAlign: "center", color: "#999", padding: "20px" }}>
-            업로드할 파일이 없습니다
+            No files to upload
           </div>
         ) : (
           tasks.map((task) => (
@@ -154,32 +154,37 @@ export default function Uploader({ targetPath }: UploaderProps) {
                 </div>
               )}
 
-              <span className={`${styles.status} ${getStatusClass(task.status)}`}>
+              <span
+                className={`${styles.status} ${getStatusClass(task.status)}`}
+              >
                 {getStatusText(task.status)}
               </span>
 
               {task.status === "uploading" && (
                 <button
+                  type="button"
                   className={styles.actionButton}
                   onClick={() => cancelUpload(task.id)}
                 >
-                  취소
+                  Cancel
                 </button>
               )}
 
               {task.status === "failed" && (
                 <>
                   <button
+                    type="button"
                     className={styles.actionButton}
                     onClick={() => retryUpload(task.id)}
                   >
-                    재시도
+                    Retry
                   </button>
                   <button
+                    type="button"
                     className={styles.actionButton}
                     onClick={() => removeTask(task.id)}
                   >
-                    제거
+                    Remove
                   </button>
                 </>
               )}
@@ -188,10 +193,11 @@ export default function Uploader({ targetPath }: UploaderProps) {
                 task.status === "skipped" ||
                 task.status === "cancelled") && (
                 <button
+                  type="button"
                   className={styles.actionButton}
                   onClick={() => removeTask(task.id)}
                 >
-                  제거
+                  Remove
                 </button>
               )}
             </div>
@@ -202,13 +208,17 @@ export default function Uploader({ targetPath }: UploaderProps) {
       {tasks.length > 0 && (
         <div className={styles.footer}>
           <span style={{ fontSize: 11, color: "#666" }}>
-            완료: {completedCount} / {tasks.length}
-            {failedCount > 0 && ` (실패: ${failedCount})`}
+            Completed: {completedCount} / {tasks.length}
+            {failedCount > 0 && ` (Failed: ${failedCount})`}
           </span>
 
           {completedCount > 0 && (
-            <button className={styles.actionButton} onClick={clearCompleted}>
-              완료 항목 제거
+            <button
+              type="button"
+              className={styles.actionButton}
+              onClick={clearCompleted}
+            >
+              Clear Completed
             </button>
           )}
         </div>
