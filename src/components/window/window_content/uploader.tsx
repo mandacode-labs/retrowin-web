@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { useCompleteUpload, useInitiateUpload } from "@/api/generated";
 import { useWindowStore } from "@/store/window.store";
+import { md5Base64 } from "@/utils/md5";
 import { isFsQuery } from "@/utils/query_keys";
 import styles from "./uploader.module.css";
 
@@ -62,6 +63,11 @@ export default function Uploader({ targetPath }: { targetPath: string }) {
       let objectId: string | null = null;
 
       try {
+        // Compute MD5 checksum and generate idempotency key
+        const fileBuffer = await file.arrayBuffer();
+        const checksum = await md5Base64(fileBuffer);
+        const idempotencyKey = crypto.randomUUID();
+
         // Step 1: Initiate upload to get presigned URL
         const initiateResult = await initiateUploadMutation.mutateAsync({
           systemId,
@@ -69,6 +75,8 @@ export default function Uploader({ targetPath }: { targetPath: string }) {
             path: `${targetPath === "/" ? "" : targetPath}/${file.name}`,
             contentType: file.type,
             size: file.size,
+            checksum,
+            idempotencyKey,
           },
         });
 

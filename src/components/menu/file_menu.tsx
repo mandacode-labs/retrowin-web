@@ -169,7 +169,7 @@ export default function FileMenu({
       const paths = getTargetPaths();
       await rmMutation.mutateAsync({
         systemId,
-        data: { paths },
+        data: { paths, recursive: true },
       });
       queryClient.invalidateQueries({ predicate: isFsQuery });
     } catch (error) {
@@ -191,7 +191,7 @@ export default function FileMenu({
         );
         await rmMutation.mutateAsync({
           systemId,
-          data: { paths },
+          data: { paths, recursive: true },
         });
         queryClient.invalidateQueries({ predicate: isFsQuery });
       }

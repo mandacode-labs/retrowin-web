@@ -124,7 +124,7 @@ export const handlers = [
     };
     const { name, description } = body;
 
-    if (!name || !name.trim()) {
+    if (!name?.trim()) {
       return HttpResponse.json(
         { error: { type: "bad_request", message: "name is required" } },
         { status: 400 }
@@ -462,7 +462,12 @@ export const handlers = [
         );
       }
 
-      const body = (await request.json()) as { path?: string; size?: number };
+      const body = (await request.json()) as {
+        path?: string;
+        size?: number;
+        checksum?: string;
+        idempotencyKey?: string;
+      };
       const { path: requestedPath } = body;
 
       if (!requestedPath) {
@@ -601,7 +606,10 @@ export const handlers = [
       );
     }
 
-    const body = (await request.json()) as { paths?: string[] };
+    const body = (await request.json()) as {
+      paths?: string[];
+      recursive?: boolean;
+    };
     const paths = body.paths || [];
 
     const deleted: string[] = [];
