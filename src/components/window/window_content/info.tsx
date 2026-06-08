@@ -1,4 +1,4 @@
-import { useStatPath } from "@/api/generated";
+import { useFileInfo } from "@/api/hooks";
 import { useWindowStore } from "@/store/window.store";
 import styles from "./info.module.css";
 
@@ -26,17 +26,7 @@ export default function InfoViewer({
   const currentWindow = windows.find((w) => w.targetKey === path);
   const systemId = currentWindow?.systemId || "";
 
-  const statQuery = useStatPath(
-    systemId,
-    { path },
-    {
-      query: {
-        select: (data) => (data.status === 200 ? data.data.inode : null),
-        enabled: !!systemId && !!path,
-      },
-      fetch: { credentials: "include" },
-    }
-  );
+  const statQuery = useFileInfo(systemId, path);
 
   const inode = statQuery.data ?? null;
 

@@ -1,10 +1,9 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
+import { queryClient } from "@/api/client";
 import { startMockService } from "@/mocks";
-
-const queryClient = new QueryClient();
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const [mswReady, setMswReady] = useState(false);

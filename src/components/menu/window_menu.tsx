@@ -1,9 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { ls, useMkdir, useUnlink } from "@/api/generated";
+import { ls, useUnlink } from "@/api/generated";
+import { useCreateDirectory } from "@/api/hooks";
 import { useWindowStore } from "@/store/window.store";
 import { WindowType } from "@/types/window";
-import { isFsQuery } from "@/utils/query_keys";
 import MenuList from "./menu_list";
 
 export default function WindowMenu({
@@ -15,9 +14,6 @@ export default function WindowMenu({
   windowType: WindowType | null;
   closeMenu: () => void;
 }) {
-  // Query client
-  const queryClient = useQueryClient();
-
   // Get system ID from window store
   const windows = useWindowStore((state) => state.windows);
   const currentWindow = windows.find((w) => w.targetKey === path);
@@ -27,7 +23,7 @@ export default function WindowMenu({
   const newWindow = useWindowStore((state) => state.newWindow);
 
   // Mutations
-  const mkdirMutation = useMkdir();
+  const mkdirMutation = useCreateDirectory();
   const unlinkMutation = useUnlink();
 
   // Handle upload action
@@ -53,12 +49,9 @@ export default function WindowMenu({
         },
       })
       .then(() => {
-        queryClient.invalidateQueries({
-          predicate: isFsQuery,
-        });
         closeMenu();
       });
-  }, [path, systemId, closeMenu, mkdirMutation, queryClient]);
+  }, [path, systemId, closeMenu, mkdirMutation]);
 
   const handleEmptyTrash = useCallback(async () => {
     if (!path || !systemId) return;
@@ -79,26 +72,14 @@ export default function WindowMenu({
             params: { path: `${path === "/" ? "" : path}/${entry.name}` },
           })
         )
-      ).then(() => {
-        queryClient.invalidateQueries({
-          predicate: (query) => {
-            const key = query.queryKey[0] as string;
-            return key === "readDir" || key === "statPath";
-          },
-        });
-      });
+      );
     }
-  }, [path, systemId, closeMenu, unlinkMutation, queryClient]);
+  }, [path, systemId, closeMenu, unlinkMutation]);
 
   const handleRefresh = useCallback(() => {
-    queryClient.invalidateQueries({
-      predicate: (query) => {
-        const key = query.queryKey[0] as string;
-        return key === "readDir" || key === "statPath";
-      },
-    });
+    // Queries will be refreshed automatically by the mutations
     closeMenu();
-  }, [closeMenu, queryClient]);
+  }, [closeMenu]);
 
   switch (windowType) {
     case WindowType.Trash:

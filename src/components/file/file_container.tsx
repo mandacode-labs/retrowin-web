@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
-import { useLs, useStatPath } from "@/api/generated";
 import type { DirEntry } from "@/api/generated/model";
+import { useDirectory, useFileInfo } from "@/api/hooks";
 import { SpecialFileName, VirtualFileType } from "@/types/file";
 import { getFileType, getFileTypeSortOrder } from "@/utils/file_type";
 import styles from "./file_container.module.css";
@@ -50,32 +50,12 @@ export default function FileContainer({
   trash?: boolean;
   backgroundFile?: boolean;
 }) {
-  // Use Orval's generated hooks directly
-  const readDirQuery = useLs(
-    systemId,
-    { path },
-    {
-      query: {
-        select: (data) => (data.status === 200 ? data.data.entries : []),
-        enabled: !!systemId && !!path,
-      },
-      fetch: { credentials: "include" },
-    }
-  );
+  // Use custom hooks
+  const readDirQuery = useDirectory(systemId, path);
 
   // Get trash inode if trash should be shown (trash is under home)
   const trashPath = "/home/.trash";
-  const trashStatQuery = useStatPath(
-    systemId,
-    { path: trashPath },
-    {
-      query: {
-        select: (data) => (data.status === 200 ? data.data.inode : null),
-        enabled: trash && !!systemId,
-      },
-      fetch: { credentials: "include" },
-    }
-  );
+  const trashStatQuery = useFileInfo(systemId, trashPath);
 
   const sortFiles = useCallback((a: DirEntry, b: DirEntry): number => {
     // Home > Trash > Upload > Others
