@@ -10,12 +10,12 @@ export interface MkdirRequest {
   /** Directory path to create */
   path: string;
   /**
-   * Directory permissions (default: 0755).
-   * Only permission bits (0777) are used; file type is automatically set to directory.
-   * Common values:
-   * - 0755: rwxr-xr-x (default, world-readable)
-   * - 0700: rwx------ (private, owner only)
-   * - 0775: rwxrwxr-x (group writable)
-   */
+     * Directory permissions (default: 0755).
+     * Only permission bits (0777) are used; file type is automatically set to directory.
+     * Common values:
+     * - 0755: rwxr-xr-x (default, world-readable)
+     * - 0700: rwx------ (private, owner only)
+     * - 0775: rwxrwxr-x (group writable)
+     */
   mode?: number;
 }

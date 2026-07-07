@@ -10,9 +10,9 @@ export interface MoveRequest {
   /** Current path of the file/directory to move */
   path: string;
   /**
-   * Destination path. Can be:
-   * - A directory path (file keeps its name): /home/user/docs
-   * - A full new path (file gets renamed): /home/user/docs/new.txt
-   */
+     * Destination path. Can be:
+     * - A directory path (file keeps its name): /home/user/docs
+     * - A full new path (file gets renamed): /home/user/docs/new.txt
+     */
   destination: string;
 }

@@ -8,14 +8,14 @@
 
 export interface CreateSystemGroupRequest {
   /**
-   * Group name
-   * @minLength 1
-   * @maxLength 255
-   */
+     * Group name
+     * @minLength 1
+     * @maxLength 255
+     */
   name: string;
   /**
-   * Optional GID (auto-assigned if 0 or not provided)
-   * @minimum 0
-   */
+     * Optional GID (auto-assigned if 0 or not provided)
+     * @minimum 0
+     */
   gid?: number;
 }

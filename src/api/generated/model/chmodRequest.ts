@@ -10,14 +10,14 @@ export interface ChmodRequest {
   /** File path */
   path: string;
   /**
-   * New permission bits (only lower 12 bits used).
-   * File type bits are preserved; only permissions are changed.
-   *
-   * Common values:
-   * - 0755: rwxr-xr-x (executable/script)
-   * - 0644: rw-r--r-- (regular file)
-   * - 0600: rw------- (private file)
-   * - 0700: rwx------ (private directory)
-   */
+     * New permission bits (only lower 12 bits used).
+     * File type bits are preserved; only permissions are changed.
+     *
+     * Common values:
+     * - 0755: rwxr-xr-x (executable/script)
+     * - 0644: rw-r--r-- (regular file)
+     * - 0600: rw------- (private file)
+     * - 0700: rwx------ (private directory)
+     */
   mode: number;
 }

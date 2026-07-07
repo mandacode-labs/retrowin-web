@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { DownloadURL } from "./downloadURL";
+import type { DownloadURL } from './downloadURL';
 
 export interface DownloadURLResponse {
   downloadUrl: DownloadURL;

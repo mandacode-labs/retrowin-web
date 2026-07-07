@@ -7,8 +7,8 @@
  */
 
 export type StatPathParams = {
-  /**
-   * File path (e.g., /home/user/file.txt)
-   */
-  path: string;
+/**
+ * File path (e.g., /home/user/file.txt)
+ */
+path: string;
 };

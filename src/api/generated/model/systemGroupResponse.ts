@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { SystemGroup } from "./systemGroup";
+import type { SystemGroup } from './systemGroup';
 
 export interface SystemGroupResponse {
   group: SystemGroup;

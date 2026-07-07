@@ -62,7 +62,8 @@ export default memo(function Window({ windowKey }: { windowKey: string }) {
   // Set window title
   useEffect(() => {
     if (targetWindow?.type === WindowType.Uploader) {
-      setTitle(windowKey, "Uploader");
+      const target = targetWindow.targetKey || "/";
+      setTitle(windowKey, `Upload to ${target}`);
     } else if (targetWindow?.targetKey) {
       // Extract filename from path
       const path = targetWindow.targetKey;

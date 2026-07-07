@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { DirEntry } from "./dirEntry";
+import type { DirEntry } from './dirEntry';
 
 export interface DirContentResponse {
   entries: DirEntry[];

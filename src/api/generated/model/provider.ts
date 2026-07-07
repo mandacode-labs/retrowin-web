@@ -9,9 +9,10 @@
 /**
  * Authentication provider
  */
-export type Provider = (typeof Provider)[keyof typeof Provider];
+export type Provider = typeof Provider[keyof typeof Provider];
+
 
 export const Provider = {
-  keycloak: "keycloak",
-  google: "google",
+  keycloak: 'keycloak',
+  google: 'google',
 } as const;

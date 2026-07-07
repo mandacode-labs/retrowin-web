@@ -9,10 +9,10 @@
 /**
  * Health status
  */
-export type HealthStatusStatus =
-  (typeof HealthStatusStatus)[keyof typeof HealthStatusStatus];
+export type HealthStatusStatus = typeof HealthStatusStatus[keyof typeof HealthStatusStatus];
+
 
 export const HealthStatusStatus = {
-  healthy: "healthy",
-  unhealthy: "unhealthy",
+  healthy: 'healthy',
+  unhealthy: 'unhealthy',
 } as const;

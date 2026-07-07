@@ -10,18 +10,18 @@ export interface CreateSystemUserRequest {
   /** External user ID */
   userId: string;
   /**
-   * Username within the system
-   * @minLength 1
-   * @maxLength 255
-   */
+     * Username within the system
+     * @minLength 1
+     * @maxLength 255
+     */
   username: string;
   /**
-   * Optional UNIX user ID.
-   * - -1 or omitted: Auto-assigned (starts from 1000)
-   * - 0: Root user (superuser) - requires special privileges
-   * - 1-999: Reserved for system users
-   * - 1000-65533: Regular users
-   * @minimum -1
-   */
+     * Optional UNIX user ID.
+     * - -1 or omitted: Auto-assigned (starts from 1000)
+     * - 0: Root user (superuser) - requires special privileges
+     * - 1-999: Reserved for system users
+     * - 1000-65533: Regular users
+     * @minimum -1
+     */
   uid?: number;
 }
