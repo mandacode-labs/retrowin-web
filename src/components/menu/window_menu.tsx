@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { ls, useUnlink } from "@/api/generated";
-import { useCreateDirectory } from "@/api/hooks";
+import { useCreateUniqueFolder } from "@/api/hooks";
 import { useWindowStore } from "@/store/window.store";
 import { WindowType } from "@/types/window";
 import MenuList from "./menu_list";
@@ -23,7 +23,7 @@ export default function WindowMenu({
   const newWindow = useWindowStore((state) => state.newWindow);
 
   // Mutations
-  const mkdirMutation = useCreateDirectory();
+  const createUniqueFolder = useCreateUniqueFolder();
   const unlinkMutation = useUnlink();
 
   // Handle upload action
@@ -39,19 +39,13 @@ export default function WindowMenu({
 
   const handleCreateContainer = useCallback(async () => {
     if (!path || !systemId) return;
-
-    await mkdirMutation
-      .mutateAsync({
-        systemId,
-        data: {
-          path: `${path === "/" ? "" : path}/New Folder`,
-          mode: 0o755,
-        },
-      })
-      .then(() => {
-        closeMenu();
-      });
-  }, [path, systemId, closeMenu, mkdirMutation]);
+    closeMenu();
+    try {
+      await createUniqueFolder(systemId, path);
+    } catch (error) {
+      console.error("[WindowMenu] Failed to create folder:", error);
+    }
+  }, [path, systemId, closeMenu, createUniqueFolder]);
 
   const handleEmptyTrash = useCallback(async () => {
     if (!path || !systemId) return;
