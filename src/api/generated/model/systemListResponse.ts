@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { System } from "./system";
+import type { System } from './system';
 
 export interface SystemListResponse {
   systems: System[];

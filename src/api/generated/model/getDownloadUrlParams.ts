@@ -7,8 +7,8 @@
  */
 
 export type GetDownloadUrlParams = {
-  /**
-   * File path
-   */
-  path: string;
+/**
+ * File path
+ */
+path: string;
 };

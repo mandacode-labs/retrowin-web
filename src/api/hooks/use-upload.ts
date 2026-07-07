@@ -37,11 +37,20 @@ const MAX_RETRIES = 3;
 const RETRY_DELAYS = [1000, 2000, 4000];
 const CONCURRENCY = 5;
 
-export function useUploadManager(systemId: string) {
+export function useUploadManager(systemId: string, targetPath: string) {
   const [state, setState] = useState<UploadManagerState>({
     tasks: [],
     isUploading: false,
   });
+
+  const resolveFilePath = useCallback(
+    (fileName: string) => {
+      const trimmed = targetPath.replace(/\/+$/, "");
+      if (!trimmed || trimmed === "") return `/${fileName}`;
+      return `${trimmed}/${fileName}`;
+    },
+    [targetPath]
+  );
 
   // Use ref to always access latest state without stale closure issues
   const tasksRef = useRef<UploadTask[]>([]);
@@ -98,7 +107,7 @@ export function useUploadManager(systemId: string) {
       }));
 
       try {
-        const filePath = `${task.fileName}`;
+        const filePath = resolveFilePath(task.fileName);
 
         // Check for duplicate
         const exists = await checkDuplicate(filePath);
@@ -240,42 +249,36 @@ export function useUploadManager(systemId: string) {
         }));
       }
     },
-    [systemId, initiateUpload, completeUpload, checkDuplicate]
+    [systemId, initiateUpload, completeUpload, checkDuplicate, resolveFilePath]
   );
 
-  const addFiles = useCallback(
-    async (files: FileList | File[]) => {
-      const newTasks: UploadTask[] = Array.from(files).map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        fileName: file.name,
-        status: "pending",
-        progress: 0,
-        bytesUploaded: 0,
-        totalBytes: file.size,
-        retryCount: 0,
-      }));
+  const addFiles = useCallback((files: FileList | File[]) => {
+    const newTasks: UploadTask[] = Array.from(files).map((file) => ({
+      id: crypto.randomUUID(),
+      file,
+      fileName: file.name,
+      status: "pending",
+      progress: 0,
+      bytesUploaded: 0,
+      totalBytes: file.size,
+      retryCount: 0,
+    }));
 
-      setState((prev) => ({
-        ...prev,
-        tasks: [...prev.tasks, ...newTasks],
-      }));
+    setState((prev) => ({
+      ...prev,
+      tasks: [...prev.tasks, ...newTasks],
+    }));
+  }, []);
 
-      // Upload with concurrency control
-      // Use setTimeout to allow state update to complete first
-      setTimeout(async () => {
-        const executeBatch = async (batch: UploadTask[]) => {
-          await Promise.allSettled(batch.map((task) => uploadFile(task.id)));
-        };
+  const startUpload = useCallback(async () => {
+    const pending = tasksRef.current.filter((t) => t.status === "pending");
+    if (pending.length === 0) return;
 
-        for (let i = 0; i < newTasks.length; i += CONCURRENCY) {
-          const batch = newTasks.slice(i, i + CONCURRENCY);
-          await executeBatch(batch);
-        }
-      }, 0);
-    },
-    [uploadFile]
-  );
+    for (let i = 0; i < pending.length; i += CONCURRENCY) {
+      const batch = pending.slice(i, i + CONCURRENCY);
+      await Promise.allSettled(batch.map((task) => uploadFile(task.id)));
+    }
+  }, [uploadFile]);
 
   const cancelUpload = useCallback((taskId: string) => {
     isCancelledRef.current.add(taskId);
@@ -343,6 +346,7 @@ export function useUploadManager(systemId: string) {
     tasks: state.tasks,
     isUploading: state.isUploading,
     addFiles,
+    startUpload,
     cancelUpload,
     retryUpload,
     removeTask,

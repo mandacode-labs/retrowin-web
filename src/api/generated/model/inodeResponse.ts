@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { Inode } from "./inode";
+import type { Inode } from './inode';
 
 export interface InodeResponse {
   inode: Inode;

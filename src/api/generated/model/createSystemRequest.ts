@@ -8,14 +8,14 @@
 
 export interface CreateSystemRequest {
   /**
-   * System name
-   * @minLength 1
-   * @maxLength 255
-   */
+     * System name
+     * @minLength 1
+     * @maxLength 255
+     */
   name: string;
   /**
-   * System description
-   * @maxLength 1000
-   */
+     * System description
+     * @maxLength 1000
+     */
   description?: string | null;
 }

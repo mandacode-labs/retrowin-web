@@ -7,8 +7,8 @@
  */
 
 export type UnlinkParams = {
-  /**
-   * Path to delete
-   */
-  path: string;
+/**
+ * Path to delete
+ */
+path: string;
 };

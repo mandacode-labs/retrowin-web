@@ -7,8 +7,8 @@
  */
 
 export type LsParams = {
-  /**
-   * Directory path
-   */
-  path: string;
+/**
+ * Directory path
+ */
+path: string;
 };

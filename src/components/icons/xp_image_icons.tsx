@@ -22,156 +22,35 @@ const iconMap = {
   up: "/icons/sprites/up.webp",
 } as const;
 
-const iconSize = 48;
+const DEFAULT_ICON_SIZE = 48;
+
+const makeIcon = (key: keyof typeof iconMap, alt: string) =>
+  function IconComponent({ size = DEFAULT_ICON_SIZE }: { size?: number }) {
+    return (
+      <Image
+        src={iconMap[key]}
+        alt={alt}
+        width={size}
+        height={size}
+        unoptimized
+      />
+    );
+  };
 
 export const XPImageIcons = {
-  Folder: () => (
-    <Image
-      src={iconMap.folder_closed}
-      alt="Folder"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  FolderOpen: () => (
-    <Image
-      src={iconMap.folder_opened}
-      alt="Folder Open"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  File: () => (
-    <Image
-      src={iconMap.generic_document}
-      alt="File"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  TextFile: () => (
-    <Image
-      src={iconMap.generic_text_document}
-      alt="Text File"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Audio: () => (
-    <Image
-      src={iconMap.generic_audio}
-      alt="Audio"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Video: () => (
-    <Image
-      src={iconMap.generic_video}
-      alt="Video"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Media: () => (
-    <Image
-      src={iconMap.generic_media}
-      alt="Media"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Trash: () => (
-    <Image
-      src={iconMap.recycle_bin_empty}
-      alt="Trash"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  TrashFull: () => (
-    <Image
-      src={iconMap.recycle_bin_full}
-      alt="Trash Full"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Home: () => (
-    <Image
-      src={iconMap.my_documents}
-      alt="Home"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Upload: () => (
-    <Image
-      src={iconMap.up}
-      alt="Upload"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  JPG: () => (
-    <Image
-      src={iconMap.jpg}
-      alt="JPG"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  GIF: () => (
-    <Image
-      src={iconMap.gif}
-      alt="GIF"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  Bitmap: () => (
-    <Image
-      src={iconMap.bitmap}
-      alt="BMP"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
-
-  TIFF: () => (
-    <Image
-      src={iconMap.tiff}
-      alt="TIFF"
-      width={iconSize}
-      height={iconSize}
-      unoptimized
-    />
-  ),
+  Folder: makeIcon("folder_closed", "Folder"),
+  FolderOpen: makeIcon("folder_opened", "Folder Open"),
+  File: makeIcon("generic_document", "File"),
+  TextFile: makeIcon("generic_text_document", "Text File"),
+  Audio: makeIcon("generic_audio", "Audio"),
+  Video: makeIcon("generic_video", "Video"),
+  Media: makeIcon("generic_media", "Media"),
+  Trash: makeIcon("recycle_bin_empty", "Trash"),
+  TrashFull: makeIcon("recycle_bin_full", "Trash Full"),
+  Home: makeIcon("my_documents", "Home"),
+  Upload: makeIcon("up", "Upload"),
+  JPG: makeIcon("jpg", "JPG"),
+  GIF: makeIcon("gif", "GIF"),
+  Bitmap: makeIcon("bitmap", "BMP"),
+  TIFF: makeIcon("tiff", "TIFF"),
 };

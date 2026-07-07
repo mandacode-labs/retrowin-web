@@ -18,11 +18,12 @@ export default function Uploader({ targetPath }: UploaderProps) {
   const {
     tasks,
     addFiles,
+    startUpload,
     cancelUpload,
     retryUpload,
     removeTask,
     clearCompleted,
-  } = useUploadManager(systemId);
+  } = useUploadManager(systemId, targetPath);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -97,16 +98,13 @@ export default function Uploader({ targetPath }: UploaderProps) {
   };
 
   const completedCount = tasks.filter((t) => t.status === "completed").length;
+  const pendingCount = tasks.filter((t) => t.status === "pending").length;
   const failedCount = tasks.filter(
     (t) => t.status === "failed" || t.status === "skipped"
   ).length;
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <span>File Upload</span>
-      </div>
-
       <button
         type="button"
         className={`${styles.dropZone} ${isDragOver ? styles.dropZoneActive : ""}`}
@@ -134,9 +132,7 @@ export default function Uploader({ targetPath }: UploaderProps) {
         ) : (
           tasks.map((task) => (
             <div key={task.id} className={styles.task}>
-              <div style={{ width: 24, height: 24, flexShrink: 0 }}>
-                <XPImageIcons.File />
-              </div>
+              <XPImageIcons.File size={16} />
 
               <span className={styles.fileName} title={task.fileName}>
                 {task.fileName}
@@ -212,15 +208,28 @@ export default function Uploader({ targetPath }: UploaderProps) {
             {failedCount > 0 && ` (Failed: ${failedCount})`}
           </span>
 
-          {completedCount > 0 && (
-            <button
-              type="button"
-              className={styles.actionButton}
-              onClick={clearCompleted}
-            >
-              Clear Completed
-            </button>
-          )}
+          <div className={styles.footerActions}>
+            {pendingCount > 0 && (
+              <button
+                type="button"
+                className={styles.actionButton}
+                onClick={startUpload}
+                disabled={!systemId}
+              >
+                Upload {pendingCount}
+              </button>
+            )}
+
+            {completedCount > 0 && (
+              <button
+                type="button"
+                className={styles.actionButton}
+                onClick={clearCompleted}
+              >
+                Clear Completed
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

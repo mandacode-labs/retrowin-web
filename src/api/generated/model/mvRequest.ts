@@ -8,14 +8,14 @@
 
 export interface MvRequest {
   /**
-   * List of source paths to move
-   * @minItems 1
-   */
+     * List of source paths to move
+     * @minItems 1
+     */
   sources: string[];
   /**
-   * Destination path. Can be:
-   * - A directory path (files keep their names): /home/user/docs
-   * - A full new path (single source only): /home/user/docs/new.txt
-   */
+     * Destination path. Can be:
+     * - A directory path (files keep their names): /home/user/docs
+     * - A full new path (single source only): /home/user/docs/new.txt
+     */
   destination: string;
 }

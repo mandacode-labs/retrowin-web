@@ -7,17 +7,6 @@
   font-family: 'Tahoma', sans-serif;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  background: linear-gradient(to bottom, #0058e6 0%, #0050d0 100%);
-  color: white;
-  font-size: 13px;
-  font-weight: bold;
-  border-bottom: 1px solid #003d9e;
-}
-
 .fileList {
   flex: 1;
   overflow-y: auto;
@@ -97,18 +86,24 @@
 .actionButton {
   padding: 2px 8px;
   font-size: 11px;
+  color: #000;
   border: 1px solid #7f9db9;
   background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
   cursor: pointer;
   border-radius: 2px;
 }
 
-.actionButton:hover {
+.actionButton:hover:not(:disabled) {
   background: linear-gradient(to bottom, #e5e5e5 0%, #d0d0d0 100%);
 }
 
-.actionButton:active {
+.actionButton:active:not(:disabled) {
   background: #c0c0c0;
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .dropZone {
@@ -141,6 +136,11 @@
   padding: 8px 12px;
   background: #f0f0f0;
   border-top: 1px solid #d0d0d0;
+}
+
+.footerActions {
+  display: flex;
+  gap: 6px;
 }
 
 .fileInput {

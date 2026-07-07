@@ -5,8 +5,8 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { Provider } from "./provider";
-import type { Timestamp } from "./timestamp";
+import type { Provider } from './provider';
+import type { Timestamp } from './timestamp';
 
 export interface User {
   /** User ID */

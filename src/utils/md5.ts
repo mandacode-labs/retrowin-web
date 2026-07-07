@@ -19,8 +19,7 @@ async function computeMd5(data: ArrayBuffer): Promise<ArrayBuffer> {
 
   // Pre-processing: append padding bit and length
   const bitLen = n * 8;
-  const padLen = ((n + 9 + 63) & ~63) - n - 8;
-  const totalLen = n + 1 + padLen + 8;
+  const totalLen = ((n + 9 + 63) & ~63) >>> 0;
   const padded = new Uint8Array(totalLen);
   padded.set(msg);
   padded[n] = 0x80;

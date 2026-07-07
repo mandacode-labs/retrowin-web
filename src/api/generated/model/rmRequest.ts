@@ -8,13 +8,13 @@
 
 export interface RmRequest {
   /**
-   * List of paths to remove
-   * @minItems 1
-   */
+     * List of paths to remove
+     * @minItems 1
+     */
   paths: string[];
   /**
-   * If true, recursively delete directories and their contents.
-   * If false (default), only empty directories can be removed.
-   */
+     * If true, recursively delete directories and their contents.
+     * If false (default), only empty directories can be removed.
+     */
   recursive?: boolean;
 }

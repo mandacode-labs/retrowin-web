@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { UploadSession } from "./uploadSession";
+import type { UploadSession } from './uploadSession';
 
 export interface UploadSessionResponse {
   uploadSession: UploadSession;

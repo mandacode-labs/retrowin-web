@@ -7,20 +7,20 @@
  */
 
 export type HandleCallbackParams = {
-  /**
-   * Authorization code from Keycloak
-   */
-  code: string;
-  /**
-   * OAuth state parameter for CSRF protection
-   */
-  state: string;
-  /**
-   * Session state from Keycloak
-   */
-  session_state?: string;
-  /**
-   * Issuer URL
-   */
-  iss?: string;
+/**
+ * Authorization code from Keycloak
+ */
+code: string;
+/**
+ * OAuth state parameter for CSRF protection
+ */
+state: string;
+/**
+ * Session state from Keycloak
+ */
+session_state?: string;
+/**
+ * Issuer URL
+ */
+iss?: string;
 };

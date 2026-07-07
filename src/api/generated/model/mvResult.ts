@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { MvResultErrorsItem } from "./mvResultErrorsItem";
+import type { MvResultErrorsItem } from './mvResultErrorsItem';
 
 export interface MvResult {
   /** Successfully moved paths */

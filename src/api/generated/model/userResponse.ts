@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { User } from "./user";
+import type { User } from './user';
 
 export interface UserResponse {
   user: User;

@@ -55,6 +55,7 @@ export default function NavbarIcon({
             targetKey: "/",
             type: WindowType.Uploader,
             title: "Uploader",
+            systemId,
           });
         }
         break;
@@ -65,6 +66,7 @@ export default function NavbarIcon({
             targetKey: "/home/.trash",
             type: WindowType.Trash,
             title: "Trash",
+            systemId,
           });
         }
         break;
@@ -78,6 +80,7 @@ export default function NavbarIcon({
     windows,
     windowCount,
     windowType,
+    systemId,
   ]);
 
   return (

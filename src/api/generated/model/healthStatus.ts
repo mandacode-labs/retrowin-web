@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { HealthStatusStatus } from "./healthStatusStatus";
+import type { HealthStatusStatus } from './healthStatusStatus';
 
 export interface HealthStatus {
   /** Health status */

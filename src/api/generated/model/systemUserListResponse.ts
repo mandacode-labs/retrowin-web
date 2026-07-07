@@ -5,7 +5,7 @@
  * Retrowin File Management System API
  * OpenAPI spec version: 0.2.0
  */
-import type { SystemUser } from "./systemUser";
+import type { SystemUser } from './systemUser';
 
 export interface SystemUserListResponse {
   users: SystemUser[];
