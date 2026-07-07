@@ -3,13 +3,16 @@ import { useCallback } from "react";
 import { ls } from "@/api/generated";
 import { getMkdirMutationOptions } from "@/api/generated";
 import { isFsQuery } from "@/api/utils";
+import { useFileStore } from "@/store/file.store";
+import { useWindowStore } from "@/store/window.store";
 import { uniqueFolderName } from "@/utils/folder_name";
 
 /**
  * Hook that creates a "New Folder" with XP-style automatic naming
- * (New Folder, New Folder (2), New Folder (3), ...).
+ * (New Folder, New Folder (2), New Folder (3), ...) and immediately
+ * selects + renames it so the user can supply a real name.
  *
- * It reads the parent's existing entries to pick the smallest unused name
+ * Reads the parent's existing entries to pick the smallest unused name
  * and falls back to "(N+1)" if the backend reports a 409 conflict.
  */
 export function useCreateUniqueFolder() {
@@ -49,7 +52,20 @@ export function useCreateUniqueFolder() {
         });
       }
 
-      queryClient.invalidateQueries({ predicate: isFsQuery });
+      await queryClient.invalidateQueries({ predicate: isFsQuery });
+
+      // Find the actual window key for the parent path so rename attaches to the right window.
+      const targetWindow = useWindowStore
+        .getState()
+        .windows.find((w) => w.targetKey === parentPath);
+      const windowKey = targetWindow?.key ?? parentPath;
+
+      // XP behavior: the newly created folder enters rename mode immediately.
+      useFileStore.getState().selectFile(fullPath, windowKey);
+      useFileStore.getState().setRenamingFile({
+        fileKey: fullPath,
+        windowKey,
+      });
     },
     [mkdirMutation, queryClient]
   );
