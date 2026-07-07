@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { useCreateDirectory } from "@/api/hooks";
+import { useCreateUniqueFolder } from "@/api/hooks";
 import { useWindowStore } from "@/store/window.store";
 import { WindowType } from "@/types/window";
 import { isFsQuery } from "@/utils/query_keys";
@@ -13,9 +13,6 @@ export default function BackgroundMenu({
   path: string;
   closeMenu: () => void;
 }) {
-  // Query client
-  const queryClient = useQueryClient();
-
   // Get system ID from window store
   const windows = useWindowStore((state) => state.windows);
   const backgroundWindow = windows.find(
@@ -24,7 +21,8 @@ export default function BackgroundMenu({
   const systemId = backgroundWindow?.systemId || "";
 
   // Mutations
-  const mkdirMutation = useCreateDirectory();
+  const createUniqueFolder = useCreateUniqueFolder();
+  const queryClient = useQueryClient();
 
   // Store actions
   const newWindow = useWindowStore((state) => state.newWindow);
@@ -50,33 +48,12 @@ export default function BackgroundMenu({
       return;
     }
     closeMenu();
-
-    // Find a unique folder name
-    const folderName = "New Folder";
-    const _counter = 1;
-    // Note: In production, you'd want to check existing folders first
-
-    const folderPath = `${path === "/" ? "" : path}/${folderName}`;
-    console.log("[BackgroundMenu] Creating folder:", {
-      systemId,
-      path: folderPath,
-    });
-
     try {
-      await mkdirMutation.mutateAsync({
-        systemId,
-        data: {
-          path: folderPath,
-          mode: 0o755,
-        },
-      });
-      queryClient.invalidateQueries({
-        predicate: isFsQuery,
-      });
+      await createUniqueFolder(systemId, path);
     } catch (error) {
       console.error("[BackgroundMenu] Failed to create folder:", error);
     }
-  }, [path, systemId, closeMenu, mkdirMutation, queryClient]);
+  }, [path, systemId, closeMenu, createUniqueFolder]);
 
   const handleRefresh = useCallback(() => {
     queryClient.invalidateQueries({
