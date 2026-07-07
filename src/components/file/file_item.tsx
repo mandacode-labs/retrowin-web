@@ -3,6 +3,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLs } from "@/api/generated";
 import { useFileStore } from "@/store/file.store";
+import { useEventStore } from "@/store/ui.store";
 import { useWindowStore } from "@/store/window.store";
 import type { FileType } from "@/types/file";
 import { type FileIconType, VirtualFileType } from "@/types/file";
@@ -53,11 +54,13 @@ export default memo(function FileItem({
   );
   const selectBox = useFileStore((state) => state.selectBoxRect);
   const targetWindow = useFileStore((state) => state.selectBoxWindowKey);
+  const pressedKeys = useEventStore((state) => state.pressedKeys);
   // Store actions
   const setFileIconRef = useFileStore((state) => state.setFileIconRef);
   const setHighlightedFile = useFileStore((state) => state.setHighlightedFile);
   const selectFile = useFileStore((state) => state.selectFile);
   const unselectFile = useFileStore((state) => state.unselectFile);
+  const unselectAllFiles = useFileStore((state) => state.unselectAllFiles);
   const newWindow = useWindowStore((state) => state.newWindow);
   const getBackgroundWindow = useWindowStore(
     (state) => state.getBackgroundWindow
@@ -144,10 +147,23 @@ export default memo(function FileItem({
     setFileIconRef(fileKey, windowKey, iconRef);
   }, [fileKey, setFileIconRef, windowKey]);
 
-  // Single click: select file
+  // Single click: select file. Clear previous selection unless Shift is held
+  // or the file is already selected. Mirrors drag_file_container.tsx behavior.
   const handleSingleClick = useCallback(() => {
+    const isAlreadySelected = selectedFileSerials.includes(serialKey);
+    if (!isAlreadySelected && !pressedKeys.includes("Shift")) {
+      unselectAllFiles();
+    }
     selectFile(fileKey, windowKey);
-  }, [fileKey, selectFile, windowKey]);
+  }, [
+    fileKey,
+    pressedKeys,
+    selectFile,
+    selectedFileSerials,
+    serialKey,
+    unselectAllFiles,
+    windowKey,
+  ]);
 
   // Double click: open file
   const handleDoubleClick = useCallback(() => {
