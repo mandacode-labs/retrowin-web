@@ -1,7 +1,9 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { useUploadManager } from "@/api/hooks/use-upload";
+import { isFsQuery } from "@/utils/query_keys";
 import { XPImageIcons } from "@/components/icons/xp_image_icons";
 import { useWindowStore } from "@/store/window.store";
 import styles from "./uploader.module.css";
@@ -15,6 +17,8 @@ export default function Uploader({ targetPath }: UploaderProps) {
   const currentWindow = windows.find((w) => w.targetKey === targetPath);
   const systemId = currentWindow?.systemId || "";
 
+  const queryClient = useQueryClient();
+
   const {
     tasks,
     addFiles,
@@ -24,6 +28,11 @@ export default function Uploader({ targetPath }: UploaderProps) {
     removeTask,
     clearCompleted,
   } = useUploadManager(systemId, targetPath);
+
+  const handleStartUpload = useCallback(async () => {
+    await startUpload();
+    queryClient.invalidateQueries({ predicate: isFsQuery });
+  }, [startUpload, queryClient]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -213,7 +222,7 @@ export default function Uploader({ targetPath }: UploaderProps) {
               <button
                 type="button"
                 className={styles.actionButton}
-                onClick={startUpload}
+                onClick={handleStartUpload}
                 disabled={!systemId}
               >
                 Upload {pendingCount}
