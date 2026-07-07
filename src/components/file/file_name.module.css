@@ -1,6 +1,7 @@
 .stale_container {
   display: block;
   width: 100%;
+  overflow: visible;
 }
 
 .name_text {
@@ -11,6 +12,19 @@
   white-space: nowrap;
   text-align: center;
   color: #000;
+  line-height: 1.2;
+  min-height: 1.2em;
+  max-height: 1.2em;
+}
+
+.name_text_expanded {
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  max-height: none;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  padding: 0 2px;
 }
 
 .background_file_name {

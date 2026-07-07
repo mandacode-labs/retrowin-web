@@ -18,11 +18,13 @@ export default memo(function FileName({
   fileKey,
   windowKey,
   backgroundFile = false,
+  isSelected = false,
 }: {
   name: string;
   fileKey: string;
   windowKey: string;
   backgroundFile?: boolean;
+  isSelected?: boolean;
 }) {
   // States
   const [isRenaming, setIsRenaming] = useState(false);
@@ -120,7 +122,7 @@ export default memo(function FileName({
       ) : (
         <div className={styles.stale_container}>
           <div
-            className={`${styles.name_text} ${backgroundFile && styles.background_file_name}`}
+            className={`${styles.name_text} ${backgroundFile ? styles.background_file_name : ""} ${isSelected ? styles.name_text_expanded : ""}`}
           >
             {name}
           </div>
