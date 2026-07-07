@@ -238,6 +238,7 @@ export default memo(function FileItem({
             fileKey={fileKey}
             windowKey={windowKey}
             backgroundFile={backgroundFile}
+            isSelected={selectedFileSerials.includes(serialKey)}
           />
         </div>
       </li>
